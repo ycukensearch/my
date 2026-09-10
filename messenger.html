@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Мой Йцукен Мессенджер </title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+    }
+
+    #container {
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    #header {
+      background: orange;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      background: #eef2f5;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .message.user {
+      background: #dcf8c6;
+      align-self: flex-end;
+      text-align: right;
+    }
+
+    .message.bot {
+      background: #ffffff;
+      align-self: flex-start;
+      border: 1px solid #ddd;
+    }
+
+    #input-area {
+      padding: 10px;
+      background: white;
+      display: flex;
+      gap: 8px;
+    }
+
+    #text-input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      outline: none;
+    }
+
+    #send-btn {
+      padding: 10px 20px;
+      background: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    #send-btn:hover {
+      background: #006699;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="header">Мой Йцукен Мессенджер /div>
+    <div id="messages"></div>
+    <div id="input-area">
+      <input type="text" id="text-input" placeholder="Напишите сообщение..." autocomplete="off">
+      <button id="send-btn">Отправить!</button>
+    </div>
+  </div>
+
+  <script>
+    const messagesBox = document.getElementById('messages');
+    const textInput = document.getElementById('text-input');
+    const sendBtn = document.getElementById('send-btn');
+    const STORAGE_KEY = 'echo_chat_history';
+
+    // Загрузка истории из localStorage
+    function loadHistory() {
+      const history = localStorage.getItem(STORAGE_KEY);
+      if (!history) return;
+
+      try {
+        const messages = JSON.parse(history);
+        messages.forEach(msg => {
+          const el = document.createElement('div');
+          el.className = `message ${msg.sender}`;
+          el.textContent = msg.text;
+          messagesBox.appendChild(el);
+        });
+        scrollToBottom();
+      } catch (e) {
+        console.error('Ошибка загрузки истории:', e);
+      }
+    }
+
+    // Сохранение истории в localStorage
+    function saveHistory(newMessage) {
+      let history = [];
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) history = JSON.parse(stored);
+      } catch (e) {
+        console.error('Ошибка чтения истории:', e);
+        history = [];
+      }
+
+      history.push(newMessage);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+    }
+
+    function addMessage(text, sender) {
+      const msg = document.createElement('div');
+      msg.className = `message ${sender}`;
+      msg.textContent = text;
+      messagesBox.appendChild(msg);
+      scrollToBottom();
+
+      // Сохраняем в хранилище
+      saveHistory({ text, sender });
+    }
+
+    function scrollToBottom() {
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+    }
+
+    function sendMessage() {
+      const text = textInput.value.trim();
+      if (!text) return;
+
+      addMessage(text, 'user');
+      textInput.value = '';
+
+      setTimeout(() => {
+        addMessage(text, 'bot');
+      }, 600 + Math.random() * 400);
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+
+    textInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    // Загружаем историю при старте
+    loadHistory();
+  </script>
+</body>
+</html>
+
+ 
