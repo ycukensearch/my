@@ -1,76 +1,766 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Мой Йцукен</title>
- <meta name="description" content="Надоел непонятный интерфейс браузера? ICQX в помощь! Это отдельный веб-сайт, который будет вам как дополнение к вашему браузеру. Ничего не надо устанавливать!">
- <link rel="stylesheet" href="style.css">
-<style>
-body,
-html {
- margin: 0;
- padding: 0;
- height: 100%;
- font-family: Impact, Arial;
- box-sizing: border-box;
-}
-h1 {
-font-family: Impact;
-color: Black;
-}
-p {
-font-family: Arial;
-color: Black;
-}
-#url-bar {
- width: 80%;
- padding: 10px;
- border-radius: 64px;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Мой Йцукен</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: #fdf6ee;
+      font-family: 'Tahoma', 'Arial', sans-serif;
+      font-size: 12px; color: #000; line-height: 1.3;
+      padding: 10px 0;
+      -webkit-text-size-adjust: 100%;
+    }
+    a { color: #d35400; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    
+    /* Контейнер */
+    .container {
+      width: 100%; max-width: 780px; margin: 0 auto; background: #fff;
+      border: 1px solid #f0c9a0;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
 
-#nav-bar {
- display: flex;
- align-items: center;
- width: 100vw;
- z-index: 1000;
- height: 50px;
- background: Orange;
-}
+    /* --- ШАПКА --- */
+    .header {
+      background-color: #f39c12;
+      padding: 10px 15px;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      border-bottom: 2px solid #d35400; color: white; gap: 10px;
+    }
+    .logo { font-size: 22px; font-weight: bold; font-family: 'Arial Black', Impact, sans-serif;
+      letter-spacing: -1px; text-shadow: 1px 1px 0 #b84b00; }
+    .logo span { font-size: 12px; font-weight: normal; margin-left: 4px; opacity: 0.9; }
+    
+    .login-form { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 11px; }
+    .login-form input {
+      border: 1px solid #d35400; padding: 6px 8px; font-size: 12px;
+      background: #fff8e7; font-family: Tahoma, sans-serif; width: 120px;
+      color: #333;
+    }
+    .btn {
+      background: #e67e22; border: 1px solid #b84b00; color: white;
+      padding: 6px 14px; font-size: 12px; font-weight: bold; cursor: pointer;
+      font-family: Tahoma, sans-serif;
+    }
+    .btn:hover { background: #d35400; }
+    
+    .user-pill { display: flex; align-items: center; gap: 8px; font-size: 12px; width: 100%; justify-content: space-between; }
+    .user-pill a { color: white; }
 
-#go-button {
- padding: 10px;
- background-color: Red;
- border-radius: 64px;
- color: #1b2b4c;
- margin-left: auto;
-}
+    /* --- АВАТАРКИ --- */
+    .avatar {
+      width: 34px; height: 34px; background: #fff1d6; border: 1px solid #e0b080;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; color: #d35400; font-size: 14px; flex-shrink: 0;
+    }
+    .header .avatar { border-color: #b84b00; background: #ffe0b2; color: #b84b00; }
 
-#go-button:hover {
- cursor: pointer;
- background-color: #1b2b4c;
- color: #f5f6f7;
-}
+    /* --- СЕТКА --- */
+    .main-content { display: flex; flex-direction: column; padding: 10px; gap: 15px; }
+    .left-col { width: 100%; }
+    .right-col { width: 100%; }
 
-#browser-content {
- margin-top: 60px;
- padding: 10px;
-}
-</style>
- <link rel="shortcut icon" href="https://i.taplink.st/a/f/0/b/e/ddf761.png?1">
+    /* Меню */
+    .menu-block { margin-bottom: 12px; }
+    .menu-block h3 { display: none; }
+    .menu-block ul { 
+      list-style: none; display: flex; flex-wrap: wrap; gap: 5px; 
+    }
+    .menu-block li { margin-bottom: 0; flex: 1 0 auto; }
+    .menu-block a {
+      display: block; padding: 8px 10px; background: #fdf0e0; 
+      border: 1px solid #f0c9a0; text-align: center; font-size: 11px; 
+      font-weight: bold; color: #d35400;
+    }
+    .menu-block a.active { background: #e67e22; color: white; border-color: #b84b00; }
+
+    .menu-block.stats-block { display: none; }
+
+    /* --- КАРТОЧКИ --- */
+    .card {
+      background: #fffbf5; border: 1px solid #f0c9a0;
+      padding: 12px; margin-bottom: 12px;
+    }
+    .card h2 { font-size: 14px; color: #d35400; margin-bottom: 8px;
+      border-bottom: 1px solid #f0c9a0; padding-bottom: 4px; }
+    
+    .btn-primary {
+      background: #e67e22; border: 1px solid #b84b00; color: white;
+      padding: 8px 18px; font-size: 13px; font-weight: bold; cursor: pointer;
+      width: 100%; text-align: center; display: block;
+    }
+    .btn-primary:hover { background: #d35400; }
+    .btn-secondary {
+      background: #fdf0e0; border: 1px solid #e0b080; color: #d35400;
+      padding: 8px 18px; font-size: 13px; font-weight: bold; cursor: pointer;
+      width: 100%; text-align: center; display: block;
+    }
+    .btn-secondary:hover { background: #fbe4cc; }
+    .btn-small { padding: 5px 10px; font-size: 11px; width: auto; display: inline-block; }
+
+    input[type=text], input[type=email], input[type=password], textarea {
+      border: 1px solid #e0b080; padding: 8px; font-size: 13px;
+      font-family: Tahoma, sans-serif; background: #fff; width: 100%;
+      border-radius: 0; -webkit-appearance: none; color: #333;
+    }
+    input:focus, textarea:focus { outline: 2px solid #f39c12; border-color: #d35400; }
+    textarea { resize: vertical; min-height: 60px; }
+    .field { margin-bottom: 10px; }
+    .field label { display: block; font-size: 11px; color: #d35400; margin-bottom: 3px; font-weight: bold; }
+
+    /* --- ЛЕНТА --- */
+    .feed-item {
+      display: flex; gap: 10px; padding: 10px 0;
+      border-bottom: 1px dotted #f0c9a0;
+    }
+    .feed-item:last-child { border-bottom: none; }
+    .feed-body { flex: 1; min-width: 0; }
+    .feed-author { font-weight: bold; font-size: 12px; color: #d35400; }
+    .feed-time { font-size: 10px; color: #b09070; display: block; margin-top: 2px; }
+    .feed-text { font-size: 12px; color: #333; margin-top: 5px; word-wrap: break-word; line-height: 1.4; }
+    .feed-actions { font-size: 11px; margin-top: 6px; }
+    .feed-actions a { margin-right: 12px; color: #e67e22; }
+    .feed-actions a:hover { color: #b84b00; }
+
+    /* --- ПРОФИЛЬ --- */
+    .profile-top { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; margin-bottom: 15px; }
+    .profile-avatar {
+      width: 100px; height: 100px; background: #fff1d6; border: 1px solid #e0b080;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; color: #d35400; font-weight: bold;
+    }
+    .profile-info { width: 100%; }
+    .profile-name { font-size: 18px; font-weight: bold; color: #d35400; margin-bottom: 6px; }
+    .profile-status {
+      background: #fff8e7; border-left: 3px solid #e67e22; padding: 8px;
+      font-size: 12px; font-style: italic; color: #555; margin-bottom: 10px;
+      text-align: left;
+    }
+    .profile-table { width: 100%; font-size: 12px; text-align: left; }
+    .profile-table td { padding: 4px 0; }
+    .profile-table td:first-child { color: #b09070; width: 90px; }
+
+    /* --- ДРУЗЬЯ --- */
+    .friends-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .friend {
+      width: 80px; text-align: center; font-size: 11px;
+      padding: 8px; border: 1px solid #f0c9a0; background: #fffbf5;
+    }
+    .friend .avatar { margin: 0 auto 5px; width: 40px; height: 40px; font-size: 16px; }
+
+    /* --- ФУТЕР --- */
+    .footer {
+      background: #fdf0e0; border-top: 1px solid #f0c9a0;
+      padding: 12px 15px; font-size: 10px; color: #b09070;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .footer a { color: #d35400; }
+
+    /* --- СЛУЖЕБНЫЕ КЛАССЫ --- */
+    .muted { color: #b09070; font-size: 10px; }
+    .hidden { display: none !important; }
+    .mt { margin-top: 10px; }
+    .auth-wrap { display: flex; flex-direction: column; gap: 15px; padding: 10px; }
+    .auth-col { flex: 1; }
+
+    /* Уведомления */
+    .toast {
+      position: fixed; top: 15px; right: 15px; left: 15px; background: #d35400; color: white;
+      padding: 12px 16px; font-size: 13px; border: 1px solid #b84b00;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000;
+      opacity: 0; transition: opacity 0.3s; pointer-events: none;
+      text-align: center;
+    }
+    .toast.show { opacity: 1; }
+
+    /* --- ДЕСКТОПНАЯ ВЕРСИЯ (от 800px) --- */
+    @media (min-width: 800px) {
+      body { padding: 10px 0; }
+      .container { width: 780px; }
+      .header { padding: 8px 15px; flex-wrap: nowrap; }
+      .logo { font-size: 24px; }
+      .login-form input { width: 110px; padding: 3px 5px; font-size: 11px; }
+      .btn { padding: 3px 10px; font-size: 11px; }
+      .user-pill { width: auto; justify-content: flex-start; }
+      
+      .main-content { flex-direction: row; padding: 15px; gap: 20px; }
+      .left-col { width: 150px; }
+      .right-col { flex: 1; }
+
+      .menu-block { margin-bottom: 18px; }
+      .menu-block h3 {
+        display: block; font-size: 11px; color: #d35400; font-weight: bold; margin-bottom: 5px;
+        border-bottom: 1px solid #f0c9a0; padding-bottom: 2px; text-transform: uppercase;
+      }
+      .menu-block ul { display: block; }
+      .menu-block li { margin-bottom: 4px; flex: none; }
+      .menu-block a {
+        display: inline; padding: 0; background: transparent; border: none; 
+        text-align: left; font-weight: normal; color: #d35400;
+      }
+      .menu-block a.active { background: transparent; color: #b84b00; font-weight: bold; }
+      .menu-block.stats-block { display: block; }
+
+      .card { padding: 12px 15px; margin-bottom: 15px; }
+      .card h2 { font-size: 13px; }
+      
+      .btn-primary { display: inline-block; width: auto; padding: 5px 18px; font-size: 12px; }
+      .btn-secondary { display: inline-block; width: auto; padding: 5px 18px; font-size: 12px; }
+      .btn-small { padding: 2px 8px; font-size: 10px; }
+      
+      input[type=text], input[type=email], input[type=password], textarea {
+        padding: 4px 6px; font-size: 11px;
+      }
+      textarea { min-height: 50px; }
+      
+      .feed-time { display: inline; margin-left: 8px; font-size: 10px; }
+      .feed-author { font-size: 11px; }
+      .feed-text { font-size: 11px; margin-top: 2px; }
+      .feed-actions { font-size: 10px; margin-top: 4px; }
+
+      .profile-top { flex-direction: row; align-items: flex-start; text-align: left; gap: 15px; }
+      .profile-avatar { width: 120px; height: 120px; font-size: 40px; }
+      .profile-name { font-size: 16px; }
+      .profile-status { text-align: left; }
+
+      .friends-grid { justify-content: flex-start; }
+      .friend { width: 100px; }
+      .friend .avatar { width: 50px; height: 50px; font-size: 18px; }
+
+      .footer { flex-direction: row; justify-content: space-between; }
+      
+      .auth-wrap { flex-direction: row; padding: 20px; gap: 30px; }
+    }
+  </style>
 </head>
-
 <body>
- <div id="nav-bar">
-  <p>Мой Йцукен</p> 
- </div>
- <div id="browser-content">
-<h1>Мой Йцукен</h1>
 
-  <p>Чтобы продолжить, войдите в аккаунт!</p> <a href="login.html">Войти!</a>
+<div class="container">
+  <!-- ШАПКА -->
+  <div class="header">
+    <div class="logo">Мой Йцукен <span>Соцсеть</span></div>
+    <div id="header-right"></div>
+  </div>
+
+  <!-- ЭКРАН АВТОРИЗАЦИИ -->
+  <div id="auth-screen" class="auth-wrap hidden">
+    <div class="auth-col card">
+      <h2>Вход</h2>
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="login-email" placeholder="alex@mail.ru">
+      </div>
+      <div class="field">
+        <label>Пароль</label>
+        <input type="password" id="login-pass" placeholder="123">
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Войти</button>
+      <p class="muted mt">Тест: alex@mail.ru / 123</p>
+    </div>
+    <div class="auth-col card">
+      <h2>Регистрация</h2>
+      <div class="field">
+        <label>Имя и фамилия</label>
+        <input type="text" id="reg-name" placeholder="Иван Иванов">
+      </div>
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="reg-email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Пароль</label>
+        <input type="password" id="reg-pass" placeholder="Минимум 3 символа">
+      </div>
+      <div class="field">
+        <label>Город</label>
+        <input type="text" id="reg-city" placeholder="Москва">
+      </div>
+      <button class="btn-primary" onclick="doRegister()">Зарегистрироваться</button>
+    </div>
+  </div>
+
+  <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+  <div id="app-screen" class="main-content hidden">
+    <div class="left-col">
+      <div class="menu-block">
+        <h3>Мои настройки</h3>
+        <ul>
+          <li><a href="#" data-page="profile" class="nav-link">Моя страница</a></li>
+          <li><a href="#" data-page="feed" class="nav-link">Мои новости</a></li>
+          <li><a href="#" data-page="friends" class="nav-link">Мои друзья</a></li>
+          <li><a href="#" data-page="online" class="nav-link">Сейчас на сайте</a></li>
+          <li><a href="#" data-page="settings" class="nav-link">Настройки</a></li>
+        </ul>
+      </div>
+      <div class="menu-block stats-block">
+        <h3>Статистика</h3>
+        <ul>
+          <li class="muted">Пользователей: <span id="stat-users">0</span></li>
+          <li class="muted">Постов: <span id="stat-posts">0</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="right-col" id="page-content"></div>
+  </div>
+
+  <!-- ПОДВАЛ -->
+  <div class="footer">
+    <div class="footer-links">
+      <a href="#" onclick="toast('Это социальная сеть');return false;">О Йцукен</a>
+      <a href="#" onclick="toast('Тут нет рекламы, иначе у нас получится рекламная помойка');return false;">Реклама</a>
+      <a href="#" onclick="toast('Скоро');return false;">Разработчикам</a>
+    </div>
+    <div>© 2026 Разработчики Йцукен</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ==========================================
+// ХРАНИЛИЩЕ
+// ==========================================
+const memoryStorage = {};
+function safeGet(key, def) {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : def;
+  } catch(e) {
+    return memoryStorage[key] !== undefined ? memoryStorage[key] : def;
+  }
+}
+function safeSet(key, val) {
+  try {
+    localStorage.setItem(key, JSON.stringify(val));
+  } catch(e) {
+    memoryStorage[key] = val;
+  }
+}
+
+const LS = { users: 'vk06_users', posts: 'vk06_posts', current: 'vk06_current' };
+
+function getUsers() { return safeGet(LS.users, []); }
+function saveUsers(u) { safeSet(LS.users, u); }
+function getPosts() { return safeGet(LS.posts, []); }
+function savePosts(p) { safeSet(LS.posts, p); }
+function getCurrentId() { return safeGet(LS.current, null); }
+function setCurrentId(id) { safeSet(LS.current, id); }
+
+// ==========================================
+// ИНИЦИАЛИЗАЦИЯ
+// ==========================================
+function seedData() {
+  if (getUsers().length === 0) {
+    saveUsers([
+      { id: 1, name: 'Алексей Иванов', email: 'alex@mail.ru', password: '123', city: 'Санкт-Петербург', status: 'Всем привет!', avatar: 'А' },
+      { id: 2, name: 'Мария Петрова', email: 'maria@mail.ru', password: '123', city: 'Москва', status: 'Люблю музыку', avatar: 'М' },
+      { id: 3, name: 'Дмитрий Соколов', email: 'dmitry@mail.ru', password: '123', city: 'Казань', status: 'Всё будет хорошо!', avatar: 'Д' }
+    ]);
+  }
+  if (getPosts().length === 0) {
+    const now = Date.now();
+    savePosts([
+      { id: 1, userId: 1, text: 'Добавил новые фотографии в альбом «Лето 2006». Смотреть всем!', ts: now - 3600000, likes: [2] },
+      { id: 2, userId: 2, text: 'Вступила в группу «Питер — культурная столица».', ts: now - 7200000, likes: [] },
+      { id: 3, userId: 3, text: 'Обновил статус: «Всё будет хорошо!»', ts: now - 86400000, likes: [1] }
+    ]);
+  }
+}
+
+// ==========================================
+// ВСПОМОГАТЕЛЬНЫЕ
+// ==========================================
+function currentUser() {
+  return getUsers().find(u => u.id === getCurrentId()) || null;
+}
+function userById(id) {
+  return getUsers().find(u => u.id === id) || null;
+}
+function esc(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function timeAgo(ts) {
+  const diff = Date.now() - ts;
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'только что';
+  if (mins < 60) return mins + ' мин назад';
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return hours + ' ч назад';
+  return Math.floor(hours / 24) + ' дн назад';
+}
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ==========================================
+// АВТОРИЗАЦИЯ
+// ==========================================
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pass  = document.getElementById('login-pass').value;
+  if (!email || !pass) return toast('Заполните все поля');
+  const u = getUsers().find(x => x.email.toLowerCase() === email && x.password === pass);
+  if (!u) return toast('Неверный e-mail или пароль');
+  setCurrentId(u.id); 
+  render();
+  toast('Добро пожаловать, ' + u.name.split(' ')[0] + '!');
+}
+
+function doRegister() {
+  const name  = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
+  const pass  = document.getElementById('reg-pass').value;
+  const city  = document.getElementById('reg-city').value.trim() || '—';
   
+  if (!name || !email || !pass) return toast('Заполните обязательные поля');
+  if (pass.length < 3) return toast('Пароль минимум 3 символа');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast('Некорректный e-mail');
+  
+  const users = getUsers();
+  if (users.some(u => u.email.toLowerCase() === email)) return toast('E-mail уже занят');
+  
+  const id = (users.reduce((m,u) => Math.max(m, u.id), 0) || 0) + 1;
+  users.push({ id, name, email, password: pass, city, status: '', avatar: name.charAt(0).toUpperCase() });
+  saveUsers(users); 
+  setCurrentId(id); 
+  render(); 
+  toast('Аккаунт создан!');
+}
 
+function doLogout() {
+  setCurrentId(null); 
+  render(); 
+  toast('Вы вышли из аккаунта');
+}
+
+// ==========================================
+// РЕНДЕР
+// ==========================================
+function renderHeader() {
+  const el = document.getElementById('header-right');
+  const u = currentUser();
+  if (u) {
+    el.innerHTML = `
+      <div class="user-pill">
+        <div class="avatar">${esc(u.avatar)}</div>
+        <div style="flex:1">
+          <a href="#" onclick="navigate('profile');return false;"><b>${esc(u.name)}</b></a>
+        </div>
+        <a href="#" onclick="doLogout();return false;" style="font-size:11px; color:#ffe0b2;">Выйти</a>
+      </div>`;
+  } else {
+    el.innerHTML = `
+      <div class="login-form">
+        <input type="email" id="hdr-email" placeholder="E-mail">
+        <input type="password" id="hdr-pass" placeholder="Пароль">
+        <button class="btn" onclick="headerLogin()">Войти</button>
+      </div>`;
+  }
+}
+
+function headerLogin() {
+  const email = document.getElementById('hdr-email').value.trim().toLowerCase();
+  const pass  = document.getElementById('hdr-pass').value;
+  if (!email || !pass) return toast('Заполните поля');
+  const u = getUsers().find(x => x.email.toLowerCase() === email && x.password === pass);
+  if (!u) return toast('Неверный e-mail или пароль');
+  setCurrentId(u.id); 
+  render(); 
+  toast('С возвращением!');
+}
+
+let currentPage = 'feed';
+function navigate(page) { 
+  currentPage = page; 
+  renderPage(); 
+  window.scrollTo(0, 0);
+}
+
+function renderPage() {
+  const u = currentUser(); 
+  if (!u) return;
+  
+  const container = document.getElementById('page-content');
+  let html = '';
+  
+  if (currentPage === 'feed') html = renderFeedPage(u);
+  else if (currentPage === 'profile') html = renderProfilePage(u);
+  else if (currentPage === 'friends') html = renderFriendsPage(u);
+  else if (currentPage === 'online') html = renderOnlinePage(u);
+  else if (currentPage === 'settings') html = renderSettingsPage(u);
+  else html = renderFeedPage(u);
+
+  container.innerHTML = html;
+  
+  document.querySelectorAll('.nav-link').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === currentPage);
+  });
+  
+  document.getElementById('stat-users').textContent = getUsers().length;
+  document.getElementById('stat-posts').textContent = getPosts().length;
+}
+
+// --- СТРАНИЦЫ ---
+function renderFeedPage(me) {
+  const posts = getPosts().slice().sort((a,b) => b.ts - a.ts);
+  const html = posts.map(p => renderPost(p, me)).join('') || '<p class="muted">Постов пока нет.</p>';
+  return `
+    <div class="card">
+      <h2>Что у вас нового?</h2>
+      <textarea id="new-post-text" placeholder="Поделитесь новостью..."></textarea>
+      <div class="mt"><button class="btn-primary" onclick="createPost()">Отправить</button></div>
+    </div>
+    <div class="card">
+      <h2>Лента новостей</h2>
+      ${html}
+    </div>`;
+}
+
+function renderPost(p, me) {
+  const author = userById(p.userId) || { name: 'Удалён', avatar: '?' };
+  const liked = p.likes.includes(me.id);
+  const isMine = p.userId === me.id;
+  return `
+    <div class="feed-item">
+      <div class="avatar">${esc(author.avatar)}</div>
+      <div class="feed-body">
+        <a href="#" class="feed-author" onclick="viewProfile(${p.userId});return false;">${esc(author.name)}</a>
+        <span class="feed-time">${timeAgo(p.ts)}</span>
+        <div class="feed-text">${esc(p.text)}</div>
+        <div class="feed-actions">
+          <a href="#" onclick="toggleLike(${p.id});return false;">
+            ${liked ? '♥ Убрать лайк' : '♡ Нравится'} (${p.likes.length})
+          </a>
+          ${isMine ? `<a href="#" onclick="deletePost(${p.id});return false;" style="color:#a33;">Удалить</a>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+function createPost() {
+  const text = document.getElementById('new-post-text').value.trim();
+  if (!text) return toast('Напишите что-нибудь');
+  const posts = getPosts();
+  const id = (posts.reduce((m,p) => Math.max(m, p.id), 0) || 0) + 1;
+  posts.push({ id, userId: getCurrentId(), text, ts: Date.now(), likes: [] });
+  savePosts(posts); 
+  renderPage(); 
+  toast('Пост опубликован');
+}
+
+function deletePost(id) {
+  if (!confirm('Удалить этот пост?')) return;
+  savePosts(getPosts().filter(p => p.id !== id)); 
+  renderPage(); 
+  toast('Пост удалён');
+}
+
+function toggleLike(id) {
+  const posts = getPosts(); 
+  const p = posts.find(x => x.id === id); 
+  if (!p) return;
+  const me = getCurrentId(); 
+  const i = p.likes.indexOf(me);
+  if (i >= 0) p.likes.splice(i, 1); else p.likes.push(me);
+  savePosts(posts); 
+  renderPage();
+}
+
+function renderProfilePage(me) {
+  const myPosts = getPosts().filter(p => p.userId === me.id).sort((a,b) => b.ts - a.ts);
+  const postsHtml = myPosts.map(p => renderPost(p, me)).join('') || '<p class="muted">У вас пока нет постов.</p>';
+  return `
+    <div class="card">
+      <div class="profile-top">
+        <div class="profile-avatar">${esc(me.avatar)}</div>
+        <div class="profile-info">
+          <div class="profile-name">${esc(me.name)}</div>
+          <div class="profile-status">${me.status ? esc(me.status) : '<span class="muted">Статус не задан</span>'}</div>
+          <table class="profile-table">
+            <tr><td>Город:</td><td>${esc(me.city)}</td></tr>
+            <tr><td>E-mail:</td><td>${esc(me.email)}</td></tr>
+            <tr><td>Друзей:</td><td>${getUsers().length - 1}</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="field mt">
+        <label>Изменить статус</label>
+        <input type="text" id="status-input" value="${esc(me.status)}" maxlength="100">
+        <div class="mt"><button class="btn-primary btn-small" onclick="saveStatus()">Сохранить статус</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Мои записи</h2>
+      ${postsHtml}
+    </div>`;
+}
+
+function saveStatus() {
+  const v = document.getElementById('status-input').value.trim();
+  const users = getUsers(); 
+  const me = users.find(u => u.id === getCurrentId());
+  if (!me) return; 
+  me.status = v; 
+  saveUsers(users); 
+  renderPage(); 
+  toast('Статус сохранён');
+}
+
+function viewProfile(userId) {
+  const u = userById(userId); 
+  if (!u) return toast('Пользователь не найден');
+  if (u.id === getCurrentId()) return navigate('profile');
+  
+  const me = currentUser(); 
+  const posts = getPosts().filter(p => p.userId === userId).sort((a,b) => b.ts - a.ts);
+  const postsHtml = posts.map(p => renderPost(p, me)).join('') || '<p class="muted">Нет записей.</p>';
+  
+  document.getElementById('page-content').innerHTML = `
+    <div class="card">
+      <div class="profile-top">
+        <div class="profile-avatar">${esc(u.avatar)}</div>
+        <div class="profile-info">
+          <div class="profile-name">${esc(u.name)}</div>
+          <div class="profile-status">${u.status ? esc(u.status) : '<span class="muted">Статус не задан</span>'}</div>
+          <table class="profile-table">
+            <tr><td>Город:</td><td>${esc(u.city)}</td></tr>
+          </table>
+          <div class="mt">
+            <button class="btn-secondary btn-small" onclick="navigate('feed')" style="width:100%">← Назад в ленту</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Записи пользователя</h2>
+      ${postsHtml}
+    </div>`;
+    
+  document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+  window.scrollTo(0, 0);
+}
+
+function renderFriendsPage(me) {
+  const friends = getUsers().filter(u => u.id !== me.id);
+  const html = friends.map(u => `
+    <div class="friend">
+      <div class="avatar">${esc(u.avatar)}</div>
+      <a href="#" onclick="viewProfile(${u.id});return false;">${esc(u.name.split(' ')[0])}</a><br>
+      <span class="muted">${esc(u.city)}</span>
+    </div>`).join('') || '<p class="muted">Пока никого нет.</p>';
+  return `<div class="card"><h2>Мои друзья (${friends.length})</h2><div class="friends-grid">${html}</div></div>`;
+}
+
+function renderOnlinePage(me) {
+  const all = getUsers().filter(u => u.id !== me.id);
+  const html = all.map(u => `
+    <div class="friend">
+      <div class="avatar">${esc(u.avatar)}</div>
+      <a href="#" onclick="viewProfile(${u.id});return false;">${esc(u.name.split(' ')[0])}</a>
+    </div>`).join('') || '<p class="muted">Никого нет.</p>';
+  return `<div class="card"><h2>Сейчас на сайте</h2><div class="friends-grid">${html}</div></div>`;
+}
+
+function renderSettingsPage(me) {
+  return `
+    <div class="card">
+      <h2>Настройки профиля</h2>
+      <div class="field"><label>Имя</label><input type="text" id="set-name" value="${esc(me.name)}"></div>
+      <div class="field"><label>Город</label><input type="text" id="set-city" value="${esc(me.city)}"></div>
+      <div class="field"><label>E-mail</label><input type="email" id="set-email" value="${esc(me.email)}"></div>
+      <div class="field"><label>Новый пароль</label><input type="password" id="set-pass" placeholder="Пустое поле — не менять"></div>
+      <div class="mt"><button class="btn-primary" onclick="saveSettings()">Сохранить изменения</button></div>
+    </div>
+    <div class="card">
+      <h2>Опасная зона</h2>
+      <button class="btn-secondary" onclick="deleteAccount()" style="color:#a33;border-color:#e0b080;">Удалить аккаунт</button>
+    </div>`;
+}
+
+function saveSettings() {
+  const name = document.getElementById('set-name').value.trim();
+  const city = document.getElementById('set-city').value.trim();
+  const email = document.getElementById('set-email').value.trim().toLowerCase();
+  const pass = document.getElementById('set-pass').value;
+  
+  if (!name || !email) return toast('Имя и e-mail обязательны');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast('Некорректный e-mail');
+  
+  const users = getUsers(); 
+  const me = users.find(u => u.id === getCurrentId()); 
+  if (!me) return;
+  
+  if (users.some(u => u.id !== me.id && u.email.toLowerCase() === email)) return toast('E-mail занят');
+  
+  me.name = name; 
+  me.city = city || '—'; 
+  me.email = email; 
+  me.avatar = name.charAt(0).toUpperCase();
+  
+  if (pass) { 
+    if (pass.length < 3) return toast('Пароль минимум 3 символа'); 
+    me.password = pass; 
+  }
+  
+  saveUsers(users); 
+  render(); 
+  toast('Настройки сохранены');
+}
+
+function deleteAccount() {
+  if (!confirm('Точно удалить аккаунт?')) return;
+  const id = getCurrentId();
+  saveUsers(getUsers().filter(u => u.id !== id));
+  savePosts(getPosts().filter(p => p.userId !== id));
+  setCurrentId(null); 
+  render(); 
+  toast('Аккаунт удалён');
+}
+
+// ==========================================
+// ГЛАВНЫЙ ЦИКЛ
+// ==========================================
+function render() {
+  const u = currentUser();
+  renderHeader();
+  
+  const auth = document.getElementById('auth-screen');
+  const app  = document.getElementById('app-screen');
+  
+  if (u) {
+    auth.classList.add('hidden');
+    app.classList.remove('hidden');
+    renderPage();
+  } else {
+    auth.classList.remove('hidden');
+    app.classList.add('hidden');
+  }
+}
+
+document.addEventListener('click', function(e) {
+  const t = e.target.closest('.nav-link');
+  if (t && t.dataset.page) { 
+    e.preventDefault(); 
+    navigate(t.dataset.page); 
+  }
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  if (e.target.id === 'hdr-pass' || e.target.id === 'hdr-email') { e.preventDefault(); headerLogin(); }
+  if (e.target.id === 'login-pass' || e.target.id === 'login-email') { e.preventDefault(); doLogin(); }
+});
+
+seedData();
+render();
+</script>
 </body>
-
-</html>
+ </html>
